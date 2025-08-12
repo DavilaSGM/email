@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Consulta de Correos de Empleados</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  input { padding: 8px; width: 300px; margin-bottom: 20px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+  th { background-color: #f4f4f4; }
+</style>
+</head>
+<body>
+
+<h2>Consulta de Correos de Empleados</h2>
+<input type="text" id="buscar" placeholder="Escribe el nombre del empleado..." />
+
+<table id="tabla" aria-live="polite">
+  <thead>
+    <tr>
+      <th>Empleado</th>
+      <th>Correo SGM</th>
+      <th>Correo GRUPO ARMENTA</th>
+      <th>Correo GMAIL</th>
+      <th>Correo ESO QUIERO</th>
+      <th>Correo LO QUIERO</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const SHEET_ID = "1V1THreu-HWI4eIXtM22bxgFTi_AQNNguuOxNf-xBEHU";
+const GID = "0"; // REEMPLAZA con el GID real de la pestaña "Email"
+const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+
+let filas = [];
+const tbody = document.querySelector("#tabla tbody");
+const inputBuscar = document.getElementById("buscar");
+
+fetch(URL)
+  .then(res => res.text())
+  .then(csv => {
+    filas = csv.trim().split("\n").map(line => line.split(","));
+  })
+  .catch(err => console.error("Error al cargar CSV:", err));
+
+function mostrarFilas(filtro) {
+  tbody.innerHTML = "";
+  if (!filtro) return;
+
+  const filtroLower = filtro.toLowerCase();
+  let encontrados = 0;
+
+  filas.slice(1).forEach(fila => {
+    if (fila[0].toLowerCase().includes(filtroLower)) {
+      const tr = document.createElement("tr");
+      fila.forEach(col => {
+        const td = document.createElement("td");
+        td.textContent = col;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+      encontrados++;
+    }
+  });
+
+  if (encontrados === 0) {
+    const tr = document.createElement("tr");
+    const numCols = filas[0].length;
+    for (let i = 0; i < numCols; i++) {
+      const td = document.createElement("td");
+      td.textContent = "N/A";
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+  }
+}
+
+inputBuscar.addEventListener("input", e => {
+  mostrarFilas(e.target.value);
+});
+</script>
+
+</body>
+</html>
