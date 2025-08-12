@@ -14,14 +14,14 @@
 </head>
 <body>
 
-<h2>Consulta de Correos de Empleados</h2>
+<h2>Correos de Empleados Grupo Armenta</h2>
 <input type="text" id="buscar" placeholder="Escribe el nombre del empleado..." />
 
 <table id="tabla" aria-live="polite">
   <thead>
     <tr>
       <th>Empleado</th>
-      <th>Correo SGM</th>
+      <th>Correo SGM MERCADOTECNIA</th>
       <th>Correo GRUPO ARMENTA</th>
       <th>Correo GMAIL</th>
       <th>Correo ESO QUIERO</th>
@@ -33,7 +33,7 @@
 
 <script>
 const SHEET_ID = "1V1THreu-HWI4eIXtM22bxgFTi_AQNNguuOxNf-xBEHU";
-const GID = "0"; // REEMPLAZA con el GID real de la pestaña "Email"
+const GID = "0"; // Reemplaza con el GID real de la pestaña "Email"
 const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
 
 let filas = [];
@@ -59,7 +59,7 @@ function mostrarFilas(filtro) {
       const tr = document.createElement("tr");
       fila.forEach(col => {
         const td = document.createElement("td");
-        td.textContent = col;
+        td.textContent = col.trim() !== "" ? col : "No aplica";
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
