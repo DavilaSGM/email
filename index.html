@@ -18,6 +18,7 @@
 <h2>Correos Grupo Armenta</h2>
 <input type="text" id="buscar" placeholder="Escribe el nombre del empleado..." />
 <button id="btnAll">Mostrar todo</button>
+<button id="btnClear">Limpiar</button>
 <div id="contador"></div>
 
 <table id="tabla" aria-live="polite">
@@ -43,6 +44,7 @@ let filas = [];
 const tbody = document.querySelector("#tabla tbody");
 const inputBuscar = document.getElementById("buscar");
 const btnAll = document.getElementById("btnAll");
+const btnClear = document.getElementById("btnClear");
 const contador = document.getElementById("contador");
 
 fetch(URL)
@@ -70,7 +72,7 @@ function mostrarFilas(filtro = "") {
     }
   });
 
-  if (encontrados === 0) {
+  if (encontrados === 0 && filtro) {
     const tr = document.createElement("tr");
     const numCols = filas[0].length;
     for (let i = 0; i < numCols; i++) {
@@ -83,7 +85,7 @@ function mostrarFilas(filtro = "") {
 
   contador.textContent = encontrados > 0 
     ? `Mostrando ${encontrados} resultado(s)` 
-    : "Sin resultados";
+    : (filtro ? "Sin resultados" : "");
 }
 
 inputBuscar.addEventListener("input", e => {
@@ -93,6 +95,12 @@ inputBuscar.addEventListener("input", e => {
 btnAll.addEventListener("click", () => {
   inputBuscar.value = "";
   mostrarFilas();
+});
+
+btnClear.addEventListener("click", () => {
+  inputBuscar.value = "";
+  tbody.innerHTML = "";
+  contador.textContent = "";
 });
 </script>
 
