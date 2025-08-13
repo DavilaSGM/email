@@ -6,16 +6,19 @@
 <title>Correos Grupo Armenta</title>
 <style>
   body { font-family: Arial, sans-serif; margin: 20px; }
-  input { padding: 8px; width: 300px; margin-bottom: 20px; }
+  input, button { padding: 8px; margin: 5px; }
   table { border-collapse: collapse; width: 100%; }
   th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
   th { background-color: #f4f4f4; }
+  #contador { margin: 10px 5px; font-weight: bold; }
 </style>
 </head>
 <body>
 
 <h2>Correos Grupo Armenta</h2>
 <input type="text" id="buscar" placeholder="Escribe el nombre del empleado..." />
+<button id="btnAll">Mostrar todo</button>
+<div id="contador"></div>
 
 <table id="tabla" aria-live="polite">
   <thead>
@@ -39,6 +42,8 @@ const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=cs
 let filas = [];
 const tbody = document.querySelector("#tabla tbody");
 const inputBuscar = document.getElementById("buscar");
+const btnAll = document.getElementById("btnAll");
+const contador = document.getElementById("contador");
 
 fetch(URL)
   .then(res => res.text())
@@ -47,15 +52,13 @@ fetch(URL)
   })
   .catch(err => console.error("Error al cargar CSV:", err));
 
-function mostrarFilas(filtro) {
+function mostrarFilas(filtro = "") {
   tbody.innerHTML = "";
-  if (!filtro) return;
-
   const filtroLower = filtro.toLowerCase();
   let encontrados = 0;
 
   filas.slice(1).forEach(fila => {
-    if (fila[0].toLowerCase().includes(filtroLower)) {
+    if (!filtro || fila[0].toLowerCase().includes(filtroLower)) {
       const tr = document.createElement("tr");
       fila.forEach(col => {
         const td = document.createElement("td");
@@ -77,10 +80,19 @@ function mostrarFilas(filtro) {
     }
     tbody.appendChild(tr);
   }
+
+  contador.textContent = encontrados > 0 
+    ? `Mostrando ${encontrados} resultado(s)` 
+    : "Sin resultados";
 }
 
 inputBuscar.addEventListener("input", e => {
   mostrarFilas(e.target.value);
+});
+
+btnAll.addEventListener("click", () => {
+  inputBuscar.value = "";
+  mostrarFilas();
 });
 </script>
 
